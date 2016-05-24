@@ -10,7 +10,7 @@ $error = "";
 if($url != ""){
 
   // エントリー情報を取得するURL
-  $entry = "http://cloud.feedly.com//v3/search/feeds?query=" . urlencode($url);
+  $entry = "http://cloud.feedly.com/v3/search/feeds?query=" . urlencode($url);
 
   // JSONデータを取得してオブジェクトに変換
   $json = file_get_contents($entry);
@@ -100,11 +100,10 @@ EOM;
   <meta name="keywords" content="feedly,tool,subscriber,count">
   <title>FeedlyのRSS登録者数を調べるツールです - Feedlyお役立ちツール</title>
   <link rel="shortcut icon" href="./favicon.ico">
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
-  <link rel="stylesheet" type="text/css" href="css/odometer-theme-minimal.css">
-  <link rel="stylesheet" type="text/css" href="slick/slick.css"/>
-  <link rel="stylesheet" type="text/css" href="slick/slick-theme.css"/>
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/odometer/0.4.7/themes/odometer-theme-minimal.css">
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick.css"/>
   <style type="text/css">
   body { padding-top: 80px; }
   @media ( min-width: 768px ) {
@@ -195,7 +194,7 @@ EOM;
     <div class="col-lg-12">
 
     <h1 class="text-center">
-    <a href="./feedly_subscribers_count.php"><i class="fa fa-rss-square" style="color:#ff8c00;"></i> feedly subscribers count</a>
+    <a href="./sample.php"><i class="fa fa-rss-square" style="color:#ff8c00;"></i> feedly subscribers count</a>
     </h1>
 
     <br><br>
@@ -210,7 +209,7 @@ EOM;
 
     <div class="col-sm-8 col-sm-offset-2 text-center">
 
-      <form action="./feedly_subscribers_count.php" method="get" class="form-horizontal" id="myForm">
+      <form action="./sample.php" method="get" class="form-horizontal" id="myForm">
 
       <div class="input-group stylish-input-group">
         <input type="text" class="form-control input-lg" placeholder="URLを入力してください。" name="url" value="<?php echo $url; ?>">
@@ -299,8 +298,9 @@ EOM;
 
 
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
-<script type="text/javascript" src="js/odometer.min.js"></script>
+<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/odometer/0.4.7/odometer.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick.min.js"></script>
 
 <script type="text/javascript">
   $('[data-toggle="tooltip"]').tooltip();
