@@ -72,6 +72,20 @@ if($url != ""){
     // 購読者数
     $count = $obj['results'][0]['subscribers'];
 
+    // RSSのurl
+    $html = file_get_contents($url);
+    $feed_url = getRSSLocation($html, $url);
+    if($feed_url){
+      $rss_data = simplexml_load_file($feed_url);
+      // 各エントリーの処理
+      foreach($rss_data->channel->item as $item){
+        $ftitle = $item->title;
+        $flink = $item->link;
+        $tmptag .= "<li class=\"list-group-item\"><a href=\"" . $flink . "\" target=\"_blank\">" . $ftitle . "</a></li>\n";
+      }
+      $recent_entry = "<ul class=\"list-group\">\n" . $tmptag . "</ul>\n";
+    }
+
   }
 
 }
@@ -88,6 +102,61 @@ if($error != ""){
       </div>
 EOM;
 
+}
+
+/**
+ * @link http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP
+ */
+function getRSSLocation($html, $location){
+  if(!$html or !$location){
+    return false;
+  }else{
+    preg_match_all('/<link\s+(.*?)\s*\/?>/si', $html, $matches);
+    $links = $matches[1];
+    $final_links = array();
+    $link_count = count($links);
+    for($n=0; $n<$link_count; $n++){
+      $attributes = preg_split('/\s+/s', $links[$n]);
+      foreach($attributes as $attribute){
+        $att = preg_split('/\s*=\s*/s', $attribute, 2);
+        if(isset($att[1])){
+          $att[1] = preg_replace('/([\'"]?)(.*)\1/', '$2', $att[1]);
+          $final_link[strtolower($att[0])] = $att[1];
+        }
+      }
+      $final_links[$n] = $final_link;
+    }
+    for($n=0; $n<$link_count; $n++){
+      if(strtolower($final_links[$n]['rel']) == 'alternate'){
+        if(strtolower($final_links[$n]['type']) == 'application/rss+xml'){
+          $href = $final_links[$n]['href'];
+        }
+        if(!$href and strtolower($final_links[$n]['type']) == 'text/xml'){
+          $href = $final_links[$n]['href'];
+        }
+        if($href){
+          if(strstr($href, "http://") !== false){
+            $full_url = $href;
+          }else{
+            $url_parts = parse_url($location);
+            $full_url = "http://$url_parts[host]";
+            if(isset($url_parts['port'])){
+              $full_url .= ":$url_parts[port]";
+            }
+            if($href{0} != '/'){
+              $full_url .= dirname($url_parts['path']);
+              if(substr($full_url, -1) != '/'){
+                $full_url .= '/';
+              }
+            }
+            $full_url .= $href;
+          }
+          return $full_url;
+        }
+      }
+    }
+    return false;
+  }
 }
 ?>
 <!DOCTYPE html>
@@ -245,6 +314,8 @@ echo <<< EOM
       {$tags}
 
       <p><a href='http://cloud.feedly.com/#subscription{$feedid}'  target='blank'><img id='feedlyFollow' src='http://s3.feedly.com/img/follows/feedly-follow-rectangle-volume-medium_2x.png' alt='follow us in feedly' width='71' height='28'></a></p>
+
+      {$recent_entry}
 
     </div>
 
